@@ -1,9 +1,5 @@
 from cassandra.cqlengine.models import Model
 from cassandra.cqlengine import columns
-from cassandra.cqlengine.management import sync_table
-from .variant import Variant
-from .category import Category
-from .product_lifecycle_phase import ProductLifecyclePhase
 
 class Product(Model):
     __keyspace__ = 'product_portfolio'

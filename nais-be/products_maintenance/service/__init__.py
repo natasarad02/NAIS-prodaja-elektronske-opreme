@@ -1,0 +1,5 @@
+from .product_service import ProductService
+from .category_service import CategoryService
+from .variant_service import VariantService
+from .product_lifecycle_phase_service import ProductLifecyclePhaseService
+from .product_history_service import ProductHistoryService
