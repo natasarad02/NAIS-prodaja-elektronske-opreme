@@ -1,5 +1,5 @@
 from uuid import uuid4
-from models.category import Category
+from entity.category import Category
 
 class CategoryRepository:
 
@@ -17,6 +17,10 @@ class CategoryRepository:
     @staticmethod
     def get_category_by_id(category_id):
         return Category.objects(id=category_id).first()
+    
+    @staticmethod
+    def get_all():
+        return Category.objects
 
     @staticmethod
     def update_category(category_id, **kwargs):

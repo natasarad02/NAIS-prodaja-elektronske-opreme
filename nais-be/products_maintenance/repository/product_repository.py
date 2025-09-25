@@ -2,7 +2,7 @@ from cassandra.cqlengine.models import Model
 from cassandra.cqlengine.query import BatchQuery
 from cassandra.cqlengine import connection
 from uuid import uuid4
-from models.product import Product
+from entity.product import Product
 
 
 class ProductRepository:
@@ -46,3 +46,8 @@ class ProductRepository:
     @staticmethod
     def get_products_by_category(category_id):
         return Product.objects(category_id=category_id)
+    
+
+    @staticmethod
+    def get_all():
+        return Product.objects

@@ -1,5 +1,5 @@
-from repositories.product_lifecycle_phase_repository import ProductLifecyclePhaseRepository
-from dtos.product_lifecycle_phase_dto import ProductLifecyclePhaseDTO
+from repository.product_lifecycle_phase_repository import ProductLifecyclePhaseRepository
+from dto.product_lifecycle_phase_dto import ProductLifecyclePhaseDTO
 
 class ProductLifecyclePhaseService:
 
@@ -29,3 +29,8 @@ class ProductLifecyclePhaseService:
     @staticmethod
     def get_all_phases():
         return [ProductLifecyclePhaseDTO.from_orm(p) for p in ProductLifecyclePhaseRepository.get_all_phases()]
+    
+
+    @staticmethod
+    def get_all_phases():
+        return ProductLifecyclePhaseRepository.get_all()

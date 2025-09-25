@@ -1,5 +1,5 @@
-from repositories.variant_repository import VariantRepository
-from dtos.variant_dto import VariantDTO
+from repository.variant_repository import VariantRepository
+from dto.variant_dto import VariantDTO
 
 class VariantService:
 
@@ -30,3 +30,7 @@ class VariantService:
     @staticmethod
     def delete_variant(variant_id):
         return VariantRepository.delete_variant(variant_id)
+    
+    @staticmethod
+    def get_all_variants():
+        return VariantRepository.get_all()

@@ -1,5 +1,5 @@
-from repositories.product_history_repository import ProductHistoryRepository
-from dtos.product_history_dto import ProductHistoryDTO
+from repository.product_history_repository import ProductHistoryRepository
+from dto.product_history_dto import ProductHistoryDTO
 
 class ProductHistoryService:
 
@@ -36,3 +36,7 @@ class ProductHistoryService:
     @staticmethod
     def delete_history(history_id):
         return ProductHistoryRepository.delete_history(history_id)
+    
+    @staticmethod
+    def get_all_histories():
+        return ProductHistoryRepository.get_all()

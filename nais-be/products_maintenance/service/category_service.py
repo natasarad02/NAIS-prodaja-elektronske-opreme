@@ -1,5 +1,5 @@
-from repositories.category_repository import CategoryRepository
-from dtos.category_dto import CategoryDTO
+from repository.category_repository import CategoryRepository
+from dto.category_dto import CategoryDTO
 
 class CategoryService:
 
@@ -30,3 +30,8 @@ class CategoryService:
     @staticmethod
     def delete_category(category_id):
         return CategoryRepository.delete_category(category_id)
+    
+
+    @staticmethod
+    def get_all_categories():
+        return CategoryRepository.get_all()

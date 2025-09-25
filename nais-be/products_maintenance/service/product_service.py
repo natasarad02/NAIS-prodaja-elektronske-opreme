@@ -1,5 +1,5 @@
-from repositories.product_repository import ProductRepository
-from dtos.product_dto import ProductDTO
+from repository.product_repository import ProductRepository
+from dto.product_dto import ProductDTO
 
 class ProductService:
 
@@ -34,3 +34,6 @@ class ProductService:
     def delete_product(product_id):
         return ProductRepository.delete_product(product_id)
     
+    @staticmethod
+    def get_all_products():
+        return ProductRepository.get_all()

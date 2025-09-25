@@ -1,5 +1,5 @@
 from uuid import uuid4
-from models.product_lifecycle_phase import ProductLifecyclePhase
+from entity.product_lifecycle_phase import ProductLifecyclePhase
 
 class ProductLifecyclePhaseRepository:
 
@@ -36,3 +36,7 @@ class ProductLifecyclePhaseRepository:
     @staticmethod
     def get_all_phases():
         return ProductLifecyclePhase.objects()
+
+    @staticmethod
+    def get_all():
+        return ProductLifecyclePhase.objects

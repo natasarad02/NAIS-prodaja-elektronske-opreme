@@ -1,5 +1,5 @@
 from uuid import uuid4
-from models.variant import Variant
+from entity.variant import Variant
 
 class VariantRepository:
 
@@ -39,3 +39,7 @@ class VariantRepository:
     @staticmethod
     def get_variants_by_product(product_id):
         return Variant.objects(product_id=product_id)
+
+    @staticmethod
+    def get_all():
+        return Variant.objects

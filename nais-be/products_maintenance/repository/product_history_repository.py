@@ -1,5 +1,5 @@
 from uuid import uuid4
-from models.product_history import ProductHistory
+from entity.product_history import ProductHistory
 
 class ProductHistoryRepository:
 
@@ -42,3 +42,10 @@ class ProductHistoryRepository:
             history.delete()
             return True
         return False
+    
+    @staticmethod
+    def get_all():
+        return ProductHistory.objects
+    
+
+    
