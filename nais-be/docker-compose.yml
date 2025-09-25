@@ -19,3 +19,4 @@ services:
     environment:
       CASSANDRA_KEYSPACE: product_portfolio
       CASSANDRA_CLUSTER_NAME: ProductCluster
+    command: cassandra -f
