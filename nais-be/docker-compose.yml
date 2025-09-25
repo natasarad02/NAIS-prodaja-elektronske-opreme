@@ -1,0 +1,21 @@
+version: '3.9'
+
+services:
+  products_maintenance:
+    build: ./products_maintenance
+    container_name: products_maintenance
+    ports:
+      - "8080:8080"
+    depends_on:
+      - cassandra
+    environment:
+      - CASSANDRA_CONTACT_POINTS=cassandra
+
+  cassandra:
+    image: cassandra:4.1
+    container_name: pm_cassandra
+    ports:
+      - "9042:9042"
+    environment:
+      CASSANDRA_KEYSPACE: product_portfolio
+      CASSANDRA_CLUSTER_NAME: ProductCluster

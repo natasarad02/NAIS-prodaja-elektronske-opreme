@@ -1,0 +1,6 @@
+fastapi
+uvicorn[standard]
+cassandra-driver
+pydantic
+requests
+python-dotenv
