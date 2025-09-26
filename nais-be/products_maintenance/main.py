@@ -39,7 +39,7 @@ session.set_keyspace(KEYSPACE)
 
 connection.set_session(session)
 
-tables_to_drop = ["product", "category", "variant", "phase", "product_history"]
+tables_to_drop = ["product", "category", "variant", "product_lifecycle_phase", "product_history"]
 
 for table in tables_to_drop:
     try:
