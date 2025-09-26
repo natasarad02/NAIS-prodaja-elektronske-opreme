@@ -1,8 +1,9 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import List, Optional
 from uuid import UUID
 
 class ProductDTO(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     id: Optional[UUID]
     brand: str
     name: str
@@ -11,5 +12,4 @@ class ProductDTO(BaseModel):
     phase_id: UUID
     variants: Optional[List[str]] = [] 
 
-    class Config:
-        orm_mode = True
+ 

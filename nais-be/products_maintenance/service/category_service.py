@@ -11,20 +11,20 @@ class CategoryService:
             parent_id=category_data.parent_id,
             status=category_data.status
         )
-        return CategoryDTO.from_orm(category)
+        return CategoryDTO.model_validate(category)
 
     @staticmethod
     def get_category(category_id):
         category = CategoryRepository.get_category_by_id(category_id)
         if category:
-            return CategoryDTO.from_orm(category)
+            return CategoryDTO.model_validate(category)
         return None
 
     @staticmethod
     def update_category(category_id, category_data: CategoryDTO):
-        category = CategoryRepository.update_category(category_id, **category_data.dict(exclude_unset=True))
+        category = CategoryRepository.update_category(category_id, **category_data.model_dump(exclude_unset=True))
         if category:
-            return CategoryDTO.from_orm(category)
+            return CategoryDTO.model_validate(category)
         return None
 
     @staticmethod
@@ -34,4 +34,5 @@ class CategoryService:
 
     @staticmethod
     def get_all_categories():
-        return CategoryRepository.get_all()
+        categories = CategoryRepository.get_all()
+        return [CategoryDTO.model_validate(cat) for cat in categories]

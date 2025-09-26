@@ -28,3 +28,8 @@ def delete_category(category_id: str):
     if not success:
         raise HTTPException(status_code=404, detail="Category not found")
     return {"detail": "Category deleted"}
+
+
+@router.get("/")
+def get_all_categories():
+    return CategoryService.get_all_categories()

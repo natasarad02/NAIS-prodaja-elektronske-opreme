@@ -20,18 +20,18 @@ class ProductHistoryService:
             update_timestamp=history_data.update_timestamp,
             user_id=history_data.user_id
         )
-        return ProductHistoryDTO.from_orm(history)
+        return ProductHistoryDTO.model_validate(history)
 
     @staticmethod
     def get_history(history_id):
         history = ProductHistoryRepository.get_history_by_id(history_id)
         if history:
-            return ProductHistoryDTO.from_orm(history)
+            return ProductHistoryDTO.model_validate(history)
         return None
 
     @staticmethod
     def get_history_by_product(product_id):
-        return [ProductHistoryDTO.from_orm(h) for h in ProductHistoryRepository.get_history_by_product(product_id)]
+        return [ProductHistoryDTO.model_validate(h) for h in ProductHistoryRepository.get_history_by_product(product_id)]
 
     @staticmethod
     def delete_history(history_id):
@@ -39,4 +39,5 @@ class ProductHistoryService:
     
     @staticmethod
     def get_all_histories():
-        return ProductHistoryRepository.get_all()
+        histories = ProductHistoryRepository.get_all()
+        return [ProductHistoryDTO.model_validate(h) for h in histories]

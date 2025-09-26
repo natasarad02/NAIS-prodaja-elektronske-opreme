@@ -1,6 +1,3 @@
-from cassandra.cqlengine.models import Model
-from cassandra.cqlengine.query import BatchQuery
-from cassandra.cqlengine import connection
 from uuid import uuid4
 from entity.product import Product
 
