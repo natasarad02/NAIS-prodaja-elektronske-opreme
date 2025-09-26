@@ -1,6 +1,7 @@
 from uuid import uuid4
 from entity.variant import Variant
 
+
 class VariantRepository:
 
     @staticmethod
@@ -39,7 +40,19 @@ class VariantRepository:
     @staticmethod
     def get_variants_by_product(product_id):
         return Variant.objects(product_id=product_id)
+    '''
+    SELECT * FROM variant WHERE product_id={product_id}
+    '''
 
     @staticmethod
     def get_all():
         return Variant.objects
+    
+
+    @staticmethod
+    def count_variants_per_product():
+        return Variant.objects.group_by("product_id").values("variant_id").count()
+    
+    '''
+    SELECT product_id, count(*) AS variant_count FROM variant GROUP BY product_id
+    '''

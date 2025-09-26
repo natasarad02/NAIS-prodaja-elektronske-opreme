@@ -1,7 +1,6 @@
 from uuid import uuid4
 from entity.product import Product
 
-
 class ProductRepository:
 
     @staticmethod
@@ -49,3 +48,19 @@ class ProductRepository:
     @staticmethod
     def get_all():
         return Product.objects.all()
+    
+    @staticmethod
+    def count_products_per_category():
+        return Product.objects.group_by("category_id").values("category_id").count()
+    
+    '''
+    SELECT category_id, count(*) AS product_count FROM product GROUP BY category_id
+    '''
+
+    @staticmethod
+    def get_products_by_category(category_id):
+        return list(Product.objects(category_id=category_id))
+    
+    '''
+    SELECT * FROM product WHERE category_id={category_id}
+    '''
