@@ -1,6 +1,7 @@
 from uuid import uuid4
 from entity.product_history import ProductHistory
 
+
 class ProductHistoryRepository:
 
     @staticmethod
@@ -35,17 +36,19 @@ class ProductHistoryRepository:
     def get_history_by_product(product_id):
         return ProductHistory.objects(product_id=product_id)
 
-    @staticmethod
-    def delete_history(history_id):
-        history = ProductHistory.objects(id=history_id).first()
-        if history:
-            history.delete()
-            return True
-        return False
     
     @staticmethod
     def get_all():
         return ProductHistory.objects
+    
+
+    @staticmethod
+    def count_updates_per_product():
+        return ProductHistory.objects.group_by("product_id").values("product_id").count()
+    
+    '''
+    SELECT product_id, count(*) AS update_count FROM product_history GROUP BY product_id
+    '''
     
 
     

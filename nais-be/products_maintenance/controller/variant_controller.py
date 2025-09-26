@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from dto.variant_dto import VariantDTO
 from service.variant_service import VariantService
-
+from fastapi import Query
 router = APIRouter(prefix="/variants", tags=["Variants"])
 
 @router.post("/", response_model=VariantDTO)
@@ -17,14 +17,14 @@ def get_variant(variant_id: str):
 
 @router.put("/{variant_id}", response_model=VariantDTO)
 def update_variant(variant_id: str, variant: VariantDTO):
-    updated = VariantService.update_variant(variant_id, variant)
+    updated = VariantService.update_variant(variant.product_id, variant_id, variant)
     if not updated:
         raise HTTPException(status_code=404, detail="Variant not found")
     return updated
 
 @router.delete("/{variant_id}")
-def delete_variant(variant_id: str):
-    success = VariantService.delete_variant(variant_id)
+def delete_variant(variant_id: str, product_id: str = Query(...)):
+    success = VariantService.delete_variant(product_id, variant_id)
     if not success:
         raise HTTPException(status_code=404, detail="Variant not found")
     return {"detail": "Variant deleted"}

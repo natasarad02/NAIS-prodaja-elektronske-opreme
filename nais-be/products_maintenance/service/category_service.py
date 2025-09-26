@@ -11,27 +11,31 @@ class CategoryService:
             parent_id=category_data.parent_id,
             status=category_data.status
         )
-        return CategoryDTO.from_orm(category)
+        return CategoryDTO.model_validate(category)
 
     @staticmethod
     def get_category(category_id):
         category = CategoryRepository.get_category_by_id(category_id)
         if category:
-            return CategoryDTO.from_orm(category)
+            return CategoryDTO.model_validate(category)
         return None
 
     @staticmethod
-    def update_category(category_id, category_data: CategoryDTO):
-        category = CategoryRepository.update_category(category_id, **category_data.dict(exclude_unset=True))
+    def update_category(parent_id, category_id, category_data: CategoryDTO):
+
+        category_dict = category_data.model_dump(exclude_unset=True)
+        category_dict.pop("parent_id", None)
+        category = CategoryRepository.update_category(parent_id, category_id, **category_dict)
         if category:
-            return CategoryDTO.from_orm(category)
+            return CategoryDTO.model_validate(category)
         return None
 
     @staticmethod
-    def delete_category(category_id):
-        return CategoryRepository.delete_category(category_id)
+    def delete_category(parent_id, category_id):
+        return CategoryRepository.delete_category(parent_id, category_id)
     
 
     @staticmethod
     def get_all_categories():
-        return CategoryRepository.get_all()
+        categories = CategoryRepository.get_all()
+        return [CategoryDTO.model_validate(cat) for cat in categories]

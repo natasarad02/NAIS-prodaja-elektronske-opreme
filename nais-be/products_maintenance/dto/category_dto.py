@@ -1,8 +1,9 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional, List
 from uuid import UUID
 
 class CategoryDTO(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     id: Optional[UUID]
     name: str
     description: str
@@ -10,5 +11,5 @@ class CategoryDTO(BaseModel):
     status: str
     children: Optional[List[UUID]] = []
 
-    class Config:
-        orm_mode = True
+
+  

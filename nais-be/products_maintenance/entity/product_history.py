@@ -1,12 +1,13 @@
 from cassandra.cqlengine.models import Model
 from cassandra.cqlengine import columns
 from datetime import datetime
+import uuid
 
 class ProductHistory(Model):
     __keyspace__ = 'product_portfolio'
     
-    id = columns.UUID(primary_key=True)
-    product_id = columns.UUID(required=True)
+    product_id = columns.UUID(partition_key=True, required=True)
+    id = columns.UUID(primary_key=True, default=uuid.uuid4, clustering_order="ASC")  
     old_brand = columns.Text(required=True)
     old_name = columns.Text(required=True)
     new_brand = columns.Text(required=True)

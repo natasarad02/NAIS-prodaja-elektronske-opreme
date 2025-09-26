@@ -1,10 +1,12 @@
 # dtos/product_history_dto.py
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from uuid import UUID
 from datetime import datetime
 from typing import Optional
 
 class ProductHistoryDTO(BaseModel):
+
+    model_config = ConfigDict(from_attributes=True)
     id: Optional[UUID]
     product_id: UUID
     old_brand: str
@@ -20,5 +22,3 @@ class ProductHistoryDTO(BaseModel):
     update_timestamp: datetime
     user_id: UUID
 
-    class Config:
-        orm_mode = True

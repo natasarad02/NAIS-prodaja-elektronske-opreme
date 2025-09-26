@@ -20,13 +20,6 @@ def get_history(history_id: str):
 def get_history_by_product(product_id: str):
     return ProductHistoryService.get_history_by_product(product_id)
 
-@router.delete("/{history_id}")
-def delete_history(history_id: str):
-    success = ProductHistoryService.delete_history(history_id)
-    if not success:
-        raise HTTPException(status_code=404, detail="History not found")
-    return {"detail": "History deleted"}
-
 
 @router.get("/")
 def get_all_histories():

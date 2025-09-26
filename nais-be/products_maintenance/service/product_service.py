@@ -13,27 +13,31 @@ class ProductService:
             phase_id = product_data.phase_id
         )
 
-        return ProductDTO.from_orm(product)
+        return ProductDTO.model_validate(product)
     
 
     @staticmethod
     def get_product(product_id):
         product = ProductRepository.get_product_by_id(product_id)
         if product:
-            return ProductDTO.from_orm(product)
+            return ProductDTO.model_validate(product)
         return None
 
     @staticmethod
-    def update_product(product_id, product_data: ProductDTO):
-        product = ProductRepository.update_product(product_id, **product_data.dict(exclude_unset=True))
+    def update_product(category_id, product_id, product_data: ProductDTO):
+
+        product_dict = product_data.model_dump(exclude_unset=True)
+        product_dict.pop("category_id", None)
+        product = ProductRepository.update_product(category_id, product_id, **product_dict)
         if product:
-            return ProductDTO.from_orm(product)
+            return ProductDTO.model_validate(product)
         return None
 
     @staticmethod
-    def delete_product(product_id):
-        return ProductRepository.delete_product(product_id)
+    def delete_product(category_id, product_id):
+        return ProductRepository.delete_product(category_id, product_id)
     
     @staticmethod
     def get_all_products():
-        return ProductRepository.get_all()
+        products = ProductRepository.get_all()
+        return [ProductDTO.model_validate(p) for p in products]
