@@ -39,6 +39,15 @@ session.set_keyspace(KEYSPACE)
 
 connection.set_session(session)
 
+tables_to_drop = ["product", "category", "variant", "phase", "product_history"]
+
+for table in tables_to_drop:
+    try:
+        session.execute(f"DROP TABLE IF EXISTS {table}")
+        print(f"Dropped table: {table}")
+    except Exception as e:
+        print(f"Failed to drop table {table}: {e}")
+
 sync_all_tables()
 
 

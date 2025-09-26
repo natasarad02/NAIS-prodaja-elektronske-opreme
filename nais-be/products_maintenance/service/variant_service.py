@@ -21,15 +21,17 @@ class VariantService:
         return None
 
     @staticmethod
-    def update_variant(variant_id, variant_data: VariantDTO):
-        variant = VariantRepository.update_variant(variant_id, **variant_data.dimodel_dump(exclude_unset=True))
+    def update_variant(product_id, variant_id, variant_data: VariantDTO):
+        variant_dict = variant_data.model_dump(exclude_unset=True)
+        variant_dict.pop("product_id", None)
+        variant = VariantRepository.update_variant(product_id, variant_id, **variant_dict)
         if variant:
             return VariantDTO.model_validate(variant)
         return None
 
     @staticmethod
-    def delete_variant(variant_id):
-        return VariantRepository.delete_variant(variant_id)
+    def delete_variant(product_id, variant_id):
+        return VariantRepository.delete_variant(product_id, variant_id)
     
     @staticmethod
     def get_all_variants():

@@ -19,8 +19,8 @@ class VariantRepository:
         return Variant.objects(id=variant_id).first()
 
     @staticmethod
-    def update_variant(variant_id, **kwargs):
-        variant = Variant.objects(id=variant_id).first()
+    def update_variant(product_id, variant_id, **kwargs):
+        variant = Variant.objects(product_id=product_id, id=variant_id).first()
         if not variant:
             return None
         for key, value in kwargs.items():
@@ -29,8 +29,8 @@ class VariantRepository:
         return variant
 
     @staticmethod
-    def delete_variant(variant_id):
-        variant = Variant.objects(id=variant_id).first()
+    def delete_variant(product_id, variant_id):
+        variant = Variant.objects(product_id=product_id, id=variant_id).first()
         if variant:
             variant.delete()
             return True

@@ -32,10 +32,6 @@ class ProductHistoryService:
     @staticmethod
     def get_history_by_product(product_id):
         return [ProductHistoryDTO.model_validate(h) for h in ProductHistoryRepository.get_history_by_product(product_id)]
-
-    @staticmethod
-    def delete_history(history_id):
-        return ProductHistoryRepository.delete_history(history_id)
     
     @staticmethod
     def get_all_histories():

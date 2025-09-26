@@ -35,13 +35,6 @@ class ProductHistoryRepository:
     def get_history_by_product(product_id):
         return ProductHistory.objects(product_id=product_id)
 
-    @staticmethod
-    def delete_history(history_id):
-        history = ProductHistory.objects(id=history_id).first()
-        if history:
-            history.delete()
-            return True
-        return False
     
     @staticmethod
     def get_all():

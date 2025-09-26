@@ -6,7 +6,7 @@ INSERT INTO product_lifecycle_phase (id, name) VALUES (44444444-4444-4444-4444-4
 INSERT INTO product_lifecycle_phase (id, name) VALUES (55555555-5555-5555-5555-555555555555, 'Release');
 
 -- -------------------- CATEGORIES --------------------
-INSERT INTO category (id, name, description, parent_id, status) VALUES (aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa, 'Electronics', 'All electronic products', null, 'PUBLISHED');
+INSERT INTO category (id, name, description, parent_id, status) VALUES (aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa, 'Electronics', 'All electronic products', 00000000-0000-0000-0000-000000000000, 'PUBLISHED');
 INSERT INTO category (id, name, description, parent_id, status) VALUES (bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb, 'Phones', 'Smartphones and mobile phones', aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa, 'PUBLISHED');
 INSERT INTO category (id, name, description, parent_id, status) VALUES (cccccccc-cccc-cccc-cccc-cccccccccccc, 'Laptops', 'All kinds of laptops', aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa, 'PUBLISHED');
 INSERT INTO category (id, name, description, parent_id, status) VALUES (dddddddd-dddd-dddd-dddd-dddddddddddd, 'Home Appliances', 'Appliances for home use', aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa, 'PUBLISHED');

@@ -6,10 +6,10 @@ class CategoryRepository:
     @staticmethod
     def create_category(name: str, description: str, parent_id=None, status="ACTIVE"):
         category = Category.create(
+            parent_id=parent_id,
             id=uuid4(),
             name=name,
             description=description,
-            parent_id=parent_id,
             status=status
         )
         return category
@@ -23,8 +23,8 @@ class CategoryRepository:
         return Category.objects
 
     @staticmethod
-    def update_category(category_id, **kwargs):
-        category = Category.objects(id=category_id).first()
+    def update_category(parent_id, category_id, **kwargs):
+        category = Category.objects(parent_id=parent_id, id=category_id).first()
         if not category:
             return None
         for key, value in kwargs.items():
@@ -33,8 +33,8 @@ class CategoryRepository:
         return category
 
     @staticmethod
-    def delete_category(category_id):
-        category = Category.objects(id=category_id).first()
+    def delete_category(parent_id, category_id):
+        category = Category.objects(parent_id=parent_id, id=category_id).first()
         if category:
             category.delete()
             return True

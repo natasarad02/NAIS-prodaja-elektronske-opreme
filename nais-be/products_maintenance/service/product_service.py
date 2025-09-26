@@ -24,15 +24,18 @@ class ProductService:
         return None
 
     @staticmethod
-    def update_product(product_id, product_data: ProductDTO):
-        product = ProductRepository.update_product(product_id, **product_data.model_dump(exclude_unset=True))
+    def update_product(category_id, product_id, product_data: ProductDTO):
+
+        product_dict = product_data.model_dump(exclude_unset=True)
+        product_dict.pop("category_id", None)
+        product = ProductRepository.update_product(category_id, product_id, **product_dict)
         if product:
             return ProductDTO.model_validate(product)
         return None
 
     @staticmethod
-    def delete_product(product_id):
-        return ProductRepository.delete_product(product_id)
+    def delete_product(category_id, product_id):
+        return ProductRepository.delete_product(category_id, product_id)
     
     @staticmethod
     def get_all_products():

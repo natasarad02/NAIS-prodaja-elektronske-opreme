@@ -10,6 +10,6 @@ class ProductDTO(BaseModel):
     description: str
     category_id: UUID
     phase_id: UUID
-    variants: Optional[List[str]] = [] 
+    variants: Optional[List[UUID]] = [] 
 
  
