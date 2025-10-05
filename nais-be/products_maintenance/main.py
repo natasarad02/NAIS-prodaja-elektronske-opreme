@@ -1,4 +1,6 @@
 from fastapi import FastAPI
+from datetime import datetime, timedelta
+
 from controller import (
     product_router,
     category_router,
@@ -10,6 +12,7 @@ from cassandra.cqlengine import connection
 from entity import sync_all_tables
 import time
 from cassandra.cluster import Cluster
+from portfolio_routes import create_portfolio_router
 
 app = FastAPI(title="Products And Maintenance Microservice")
 
@@ -54,49 +57,9 @@ sync_all_tables()
 
 load_cassandra_data.load_data(session, sql_file="cassandra_data.sql")
 
+portfolio_router = create_portfolio_router(session)
+app.include_router(portfolio_router)
 
 @app.get("/")
 def root():
     return {"message": "Products Maintenance Microservice is running"}
-
-
-@app.get("/portfolio/products/count-by-category")
-def count_products_per_category():
-    rows = session.execute("""
-        SELECT category_id, count(*) AS product_count
-        FROM product
-        GROUP BY category_id
-    """)
-    return [dict(row) for row in rows]
-
-@app.get("/portfolio/products/by-category/{category_id}")
-def get_products_by_category(category_id: str):
-    rows = session.execute(f"""
-        SELECT * FROM product WHERE category_id={category_id}
-    """)
-    return [dict(row) for row in rows]
-
-@app.get("/portfolio/variants/count-by-product")
-def count_variants_per_product():
-    rows = session.execute("""
-        SELECT product_id, count(*) AS variant_count
-        FROM variant
-        GROUP BY product_id
-    """)
-    return [dict(row) for row in rows]
-
-@app.get("/portfolio/variants/by-product/{product_id}")
-def get_variants_by_product(product_id: str):
-    rows = session.execute(f"""
-        SELECT * FROM variant WHERE product_id={product_id}
-    """)
-    return [dict(row) for row in rows]
-
-@app.get("/portfolio/product-history/count-by-product")
-def count_updates_per_product():
-    rows = session.execute("""
-        SELECT product_id, count(*) AS update_count
-        FROM product_history
-        GROUP BY product_id
-    """)
-    return [dict(row) for row in rows]
