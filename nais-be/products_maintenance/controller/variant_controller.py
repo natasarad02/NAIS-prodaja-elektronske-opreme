@@ -2,6 +2,8 @@ from fastapi import APIRouter, HTTPException
 from dto.variant_dto import VariantDTO
 from service.variant_service import VariantService
 from fastapi import Query
+from saga.create_variant_orchestrator import VariantSagaOrchestrator
+
 router = APIRouter(prefix="/variants", tags=["Variants"])
 
 @router.post("/", response_model=VariantDTO)
@@ -32,3 +34,11 @@ def delete_variant(variant_id: str, product_id: str = Query(...)):
 @router.get("/")
 def get_all_variants():
     return VariantService.get_all_variants()
+
+
+@router.post("/variants/create-with-price", response_model=VariantDTO)
+def create_variant_with_price(variant_data: VariantDTO, initial_price: float):
+    try:
+        return VariantSagaOrchestrator.create_variant_with_price(variant_data, initial_price)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
