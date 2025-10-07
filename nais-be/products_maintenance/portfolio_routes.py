@@ -12,7 +12,25 @@ def create_portfolio_router(session):
             FROM product
             GROUP BY category_id
         """)
-        return [dict(row) for row in rows]
+
+        counts = [dict(row) for row in rows]
+
+        category_rows = session.execute("SELECT id, name, description FROM category")
+        categories = {str(row['id']): {'name': row['name'], 'description': row['description']} for row in category_rows}
+
+
+        result = []
+        for row in counts:
+            cat_id = str(row['category_id'])
+            cat_info = categories.get(cat_id, {})
+            result.append({
+            "category_id": cat_id,
+            "category_name": cat_info.get("name", ""),
+            "category_description": cat_info.get("description", ""),
+            "product_count": row['product_count']
+        })
+
+        return result
 
     @router.get("/portfolio/products/by-category/{category_id}")
     def get_products_by_category(category_id: str):
@@ -28,7 +46,28 @@ def create_portfolio_router(session):
             FROM variant
             GROUP BY product_id
         """)
-        return [dict(row) for row in rows]
+        
+    
+        counts = [dict(row) for row in rows]
+        product_rows = session.execute("SELECT id, name, description, phase_id FROM product")
+        products = {str(row['id']): {'name': row['name'], 'description': row['description'], 'phase_id': row['phase_id']} for row in product_rows}
+        phase_rows = session.execute("SELECT id, name FROM product_lifecycle_phase")
+        phases = {str(row['id']): row['name'] for row in phase_rows}
+
+        result = []
+        for row in counts:
+            product_id = str(row['product_id'])
+            prod_info = products.get(product_id, {})
+            phase_name = phases.get(str(prod_info.get('phase_id')), '') if prod_info.get('phase_id') else ''
+            result.append({
+            "product_id": product_id,
+            "product_name": prod_info.get('name', ''),
+            "product_description": prod_info.get('description', ''),
+            "phase_name": phase_name,
+            "variant_count": row['variant_count']
+        })
+
+        return result
 
     @router.get("/portfolio/product-history/count-by-product")
     def count_updates_per_product():
@@ -38,6 +77,7 @@ def create_portfolio_router(session):
             GROUP BY product_id
         """)
         return [dict(row) for row in rows]
+        
 
     @router.get("/portfolio/variants/by-product/{product_id}")
     def get_variants_by_product(product_id: str):
@@ -61,25 +101,41 @@ def create_portfolio_router(session):
 
     @router.get("/portfolio/product-history/top-updated-product-per-category")
     def top_product_per_category():
-  
+
+        
         rows = session.execute("""
             SELECT new_category_id, product_id, COUNT(*) AS updates
             FROM product_history
             GROUP BY product_id, new_category_id
             ALLOW FILTERING
         """)
-
-
         data = [dict(row) for row in rows]
 
-        result = {}
+    
+        top_per_category = {}
         for row in data:
-            cat = row['new_category_id']
-            if cat not in result or row['updates'] > result[cat]['updates']:
-                result[cat] = row
+            cat_id = row['new_category_id']
+            if cat_id not in top_per_category or row['updates'] > top_per_category[cat_id]['updates']:
+                top_per_category[cat_id] = row
 
- 
-        return list(result.values())
+    
+        category_rows = session.execute("SELECT id, name, description FROM category")
+        categories = {str(row['id']): {'name': row['name'], 'description': row['description']} for row in category_rows}
+
+    
+        final_result = []
+        for cat_id, row in top_per_category.items():
+            cat_info = categories.get(str(cat_id), {})
+            final_result.append({
+                "new_category_id": cat_id,
+                "category_name": cat_info.get('name', ''),
+                "category_description": cat_info.get('description', ''),
+                "product_id": row['product_id'],
+                "updates": row['updates']
+            })
+
+        return final_result
+
     
 
     @router.get("/portfolio/product-history/updates-per-day")

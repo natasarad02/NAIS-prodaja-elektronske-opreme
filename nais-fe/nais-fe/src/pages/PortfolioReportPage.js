@@ -80,14 +80,16 @@ const exportPDF = () => {
       <table>
       <thead>
         <tr>
-          <th>Category ID</th>
+          <th>Category name</th>
+          <th>Category description</th>
           <th>Product Count</th>
         </tr>
       </thead>
       <tbody>
         {productsByCategory.map((row, index) => (
           <tr key={index}>
-            <td>{row.category_id}</td>
+            <td>{row.category_name}</td>
+            <td>{row.category_description}</td>
             <td>{row.product_count}</td>
           </tr>
         ))}
@@ -99,7 +101,7 @@ const exportPDF = () => {
     <Pie
       data={productsByCategory}
       dataKey="product_count"
-      nameKey="category_id"
+      nameKey="category_name"
       cx="50%"
       cy="50%"
       outerRadius={100}
@@ -120,14 +122,18 @@ const exportPDF = () => {
          <table>
       <thead>
         <tr>
-          <th>Product ID</th>
+          <th>Product name</th>
+          <th>Product description</th>
+          <th>Product phase</th>
           <th>Variant Count</th>
         </tr>
       </thead>
       <tbody>
         {variantsByProduct.map((row, index) => (
           <tr key={index}>
-            <td>{row.product_id}</td>
+            <td>{row.product_name}</td>
+            <td>{row.product_description}</td>
+            <td>{row.phase_name}</td>
             <td>{row.variant_count}</td>
           </tr>
         ))}
@@ -140,7 +146,7 @@ const exportPDF = () => {
     <Pie
       data={variantsByProduct}
       dataKey="variant_count"
-      nameKey="product_id"
+      nameKey="product_name"
       cx="50%"
       cy="50%"
       outerRadius={100}
@@ -161,14 +167,14 @@ const exportPDF = () => {
       <table>
       <thead>
         <tr>
-          <th>New Category ID</th>
+          <th>Category name</th>
           <th>Updates</th>
         </tr>
       </thead>
       <tbody>
         {topUpdated.map((row, index) => (
           <tr key={index}>
-            <td>{row.new_category_id}</td>
+            <td>{row.category_name}</td>
             <td>{row.updates}</td>
           </tr>
         ))}
@@ -179,7 +185,7 @@ const exportPDF = () => {
       <ResponsiveContainer width="70%" height={300}>
         <BarChart data={topUpdated}>
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="new_category_id" />
+          <XAxis dataKey="category_name" />
           <YAxis />
           <Tooltip />
           <Bar dataKey="updates" fill="#ff9945ff" />
