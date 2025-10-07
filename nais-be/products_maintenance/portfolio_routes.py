@@ -82,4 +82,26 @@ def create_portfolio_router(session):
         return list(result.values())
     
 
+    @router.get("/portfolio/product-history/updates-per-day")
+    def updates_per_day():
+        rows = session.execute("""
+        SELECT update_timestamp
+        FROM product_history
+        ALLOW FILTERING
+    """)
+
+        updates_per_day = {}
+        for row in rows:
+            day = row['update_timestamp'].date()
+            updates_per_day[day] = updates_per_day.get(day, 0) + 1
+
+        
+        return [{"day": str(day), "updates": count} for day, count in sorted(updates_per_day.items())]
+
+    
+
     return router
+
+
+
+

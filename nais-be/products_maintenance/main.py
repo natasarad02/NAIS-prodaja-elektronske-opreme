@@ -13,14 +13,29 @@ from entity import sync_all_tables
 import time
 from cassandra.cluster import Cluster
 from portfolio_routes import create_portfolio_router
+from fastapi.middleware.cors import CORSMiddleware
+
 
 app = FastAPI(title="Products And Maintenance Microservice")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 
 app.include_router(product_router)
 app.include_router(category_router)
 app.include_router(variant_router)
 app.include_router(phase_router)
 app.include_router(history_router)
+
+
+
 import load_cassandra_data as load_cassandra_data
 
 CASSANDRA_HOST = "cassandra"
