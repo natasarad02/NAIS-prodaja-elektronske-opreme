@@ -82,7 +82,7 @@ def create_portfolio_router(session):
         return list(result.values())
     
 
-    @router.get("/report/product-history/updates-per-day")
+    @router.get("/portfolio/product-history/updates-per-day")
     def updates_per_day():
         rows = session.execute("""
         SELECT update_timestamp
@@ -95,7 +95,8 @@ def create_portfolio_router(session):
             day = row['update_timestamp'].date()
             updates_per_day[day] = updates_per_day.get(day, 0) + 1
 
-        return [{"date": str(day), "updates": count} for day, count in sorted(updates_per_day.items())]
+        
+        return [{"day": str(day), "updates": count} for day, count in sorted(updates_per_day.items())]
 
     
 
