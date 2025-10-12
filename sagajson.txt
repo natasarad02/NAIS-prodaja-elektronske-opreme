@@ -1,0 +1,7 @@
+{
+  "id": null,
+  "variant_code": "VAR-RED-128",
+  "description": "Red color variant with 128GB storage.",
+  "model_number": "M-2025-RED128",
+  "product_id": "1"
+}

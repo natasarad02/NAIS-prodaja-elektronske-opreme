@@ -73,12 +73,21 @@ VALUES
 
 INSERT INTO product_history (product_id, id, old_brand, old_name, new_brand, new_name, old_description, new_description, old_category_id, new_category_id, old_phase_id, new_phase_id, update_timestamp, user_id)
 VALUES 
-(3, 2, 'Sony', 'PlayStation 5', 'Sony', 'PlayStation 6', 'Old console description', 'Updated console description', 1, 1, 3, 3, '2025-09-26T12:05:00+0000', 2);
+(1, 2, 'Apple', 'iPhone 15', 'Apple', 'iPhone 16', 'Old description', 'Updated description', 2, 2, 2, 3, '2025-09-29T12:00:00+0000', 1);
+
 
 INSERT INTO product_history (product_id, id, old_brand, old_name, new_brand, new_name, old_description, new_description, old_category_id, new_category_id, old_phase_id, new_phase_id, update_timestamp, user_id)
 VALUES 
-(4, 3, 'Dell', 'XPS 16', 'Dell', 'XPS 17', 'Old laptop description', 'Updated laptop description', 3, 3, 2, 2, '2025-09-26T12:10:00+0000', 3);
+(3, 3, 'Sony', 'PlayStation 5', 'Sony', 'PlayStation 6', 'Old console description', 'Updated console description', 1, 1, 3, 3, '2025-09-26T12:05:00+0000', 2);
 
 INSERT INTO product_history (product_id, id, old_brand, old_name, new_brand, new_name, old_description, new_description, old_category_id, new_category_id, old_phase_id, new_phase_id, update_timestamp, user_id)
 VALUES 
-(5, 4, 'HP', 'Spectre x350', 'HP', 'Spectre x360', 'Old description', 'Updated description', 3, 3, 2, 2, '2025-09-26T12:15:00+0000', 4);
+(4, 4, 'Dell', 'XPS 16', 'Dell', 'XPS 17', 'Old laptop description', 'Updated laptop description', 3, 3, 2, 2, '2025-09-26T12:10:00+0000', 3);
+
+INSERT INTO product_history (product_id, id, old_brand, old_name, new_brand, new_name, old_description, new_description, old_category_id, new_category_id, old_phase_id, new_phase_id, update_timestamp, user_id)
+VALUES 
+(5, 5, 'HP', 'Spectre x350', 'HP', 'Spectre x360', 'Old description', 'Updated description', 3, 3, 2, 2, '2025-09-26T12:15:00+0000', 4);
+
+INSERT INTO product_history (product_id, id, old_brand, old_name, new_brand, new_name, old_description, new_description, old_category_id, new_category_id, old_phase_id, new_phase_id, update_timestamp, user_id)
+VALUES 
+(5, 6, 'HP', 'Spectre x350', 'HP', 'Spectre x360', 'Old description', 'Updated description', 3, 3, 2, 2, '2025-10-12T12:15:00+0000', 4);
