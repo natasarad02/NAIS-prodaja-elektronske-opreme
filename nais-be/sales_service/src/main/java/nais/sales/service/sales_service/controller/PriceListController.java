@@ -4,12 +4,13 @@ import nais.sales.service.sales_service.dto.PriceListDto;
 import nais.sales.service.sales_service.service.PriceListService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("api/price_list")
 public class PriceListController {
     private PriceListService service;

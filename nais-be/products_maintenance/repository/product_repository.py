@@ -1,14 +1,15 @@
 from uuid import uuid4
 from entity.product import Product
-
+from utils.get_next_id import get_next_id
 class ProductRepository:
 
     @staticmethod
     def create_product(brand: str, name: str, description: str, category_id, phase_id):
+        product_id = get_next_id("product")
         product = Product.create(
             category_id = category_id,
             phase_id = phase_id,
-            id=uuid4(),
+            id=product_id,
             brand = brand,
             name = name,
             description = description
