@@ -4,9 +4,17 @@ from typing import Optional
 from uuid import UUID
 from clients.price_list_client import PriceListClient
 from datetime import datetime, timedelta
-class VariantSagaOrchestrator:
-    price_list_client = PriceListClient(base_url="http://localhost:8080/api/price_list")
+from decimal import Decimal
+import os 
 
+class VariantSagaOrchestrator:
+    
+    price_list_base_url = os.environ.get(
+        "SALES_BASE_URL", "http://sales_service:8081"
+    ).rstrip("/") + "/api/price_list"
+
+    price_list_client = PriceListClient(base_url=price_list_base_url)
+        
     @staticmethod
     def create_variant_with_price(variant_data: VariantDTO, initial_price: Optional[float] = None):
         
@@ -18,18 +26,22 @@ class VariantSagaOrchestrator:
             if not variant:
                 raise RuntimeError("Variant creation failed - aborting transaction")
             
+            today = datetime.now().date() 
+            expire = today + timedelta(days=30)
+
+            print("VARIJANTA " + str(variant.id))
             price_list_data = {
-                "title": f"Initial price list for variant {variant.id}",
-                "discount": 0,
+                "title": "Initial price list for variant",
+                "discount": 0.0,
                 "quantity": 1,
-                "start_date": datetime.now(),
-                "expire_date": datetime.now() + timedelta(days=30),
-                "current_phase_id": None,
-                "region_ids": [1],          
-                "user_type_ids": [1],       
+                "startDate": today.isoformat(),
+                "expireDate": expire.isoformat(),
+                "currentPhaseId": 1,      
+                "regionIds": [],
+                "userTypeIds": [],
                 "items": [{
                     "productId": variant.id,
-                    "price": initial_price or 0
+                    "price": initial_price
                 }]
             }
 
@@ -38,7 +50,7 @@ class VariantSagaOrchestrator:
         except Exception as e:
             if variant:
                 try:
-                    VariantService.delete_variant(variant.id)
+                    VariantService.delete_variant(variant.product_id, variant.id)
                 except Exception as rollback_err:
                     raise RuntimeError(f"Rollback failed: {rollback_err}") from e
                 

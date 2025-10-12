@@ -1,12 +1,13 @@
 from uuid import uuid4
 from entity.product_lifecycle_phase import ProductLifecyclePhase
-
+from utils.get_next_id import get_next_id
 class ProductLifecyclePhaseRepository:
 
     @staticmethod
     def create_phase(name: str):
+        phase_id = get_next_id("product_lifecycle_phase")
         phase = ProductLifecyclePhase.create(
-            id=uuid4(),
+            id=phase_id,
             name=name
         )
         return phase

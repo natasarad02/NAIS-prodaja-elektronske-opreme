@@ -4,12 +4,12 @@ from uuid import UUID
 
 class CategoryDTO(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-    id: Optional[UUID]
+    id: Optional[int]
     name: str
     description: str
-    parent_id: Optional[UUID] = None
+    parent_id: Optional[int] = None
     status: str
-    children: Optional[List[UUID]] = []
+    children: Optional[List[int]] = []
 
 
   

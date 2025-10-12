@@ -5,6 +5,6 @@ from typing import Optional
 class ProductLifecyclePhaseDTO(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
-    id: Optional[UUID]
+    id: Optional[int]
     name: str
 

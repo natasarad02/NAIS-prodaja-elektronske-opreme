@@ -39,6 +39,7 @@ def get_all_variants():
 @router.post("/variants/create-with-price", response_model=VariantDTO)
 def create_variant_with_price(variant_data: VariantDTO, initial_price: float):
     try:
-        return VariantSagaOrchestrator.create_variant_with_price(variant_data, initial_price)
+        result = VariantSagaOrchestrator.create_variant_with_price(variant_data, initial_price)
+        return result["variant"]
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

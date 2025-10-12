@@ -1,13 +1,14 @@
 from uuid import uuid4
 from entity.variant import Variant
-
+from utils.get_next_id import get_next_id
 
 class VariantRepository:
 
     @staticmethod
     def create_variant(variant_code: str, description: str, model_number: str, product_id):
+        variant_id = get_next_id("variant")
         variant = Variant.create(
-            id=uuid4(),
+            id=variant_id,
             variant_code=variant_code,
             description=description,
             model_number=model_number,

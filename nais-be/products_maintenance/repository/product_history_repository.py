@@ -1,6 +1,6 @@
 from uuid import uuid4
 from entity.product_history import ProductHistory
-
+from utils.get_next_id import get_next_id
 
 class ProductHistoryRepository:
 
@@ -10,8 +10,9 @@ class ProductHistoryRepository:
         old_description, new_description, old_category_id, new_category_id,
         old_phase_id, new_phase_id, update_timestamp, user_id
     ):
+        product_history_id = get_next_id("product_history")
         history = ProductHistory.create(
-            id=uuid4(),
+            id=product_history_id,
             product_id=product_id,
             old_brand=old_brand,
             old_name=old_name,
