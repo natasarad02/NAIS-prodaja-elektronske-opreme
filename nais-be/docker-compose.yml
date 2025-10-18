@@ -1,67 +1,36 @@
 version: '3.9'
 
 services:
-  products_maintenance:
-    build: ./products_maintenance
-    container_name: products_maintenance
-    ports:
-      - "8080:8080"
-    depends_on:
-      - cassandra
-    environment:
-      - CASSANDRA_CONTACT_POINTS=cassandra
+  nats:
+    image: nats:latest
+    command: ["-js", "-p", "4222", "-m", "8222"]
+    ports: ["4222:4222", "8222:8222"]
+    restart: unless-stopped
+    networks: [electric-store-net]
 
-  cassandra:
-    image: cassandra:4.1
-    container_name: pm_cassandra
-    ports:
-      - "9042:9042"
-    environment:
-      CASSANDRA_KEYSPACE: product_portfolio
-      CASSANDRA_CLUSTER_NAME: ProductCluster
-    command: cassandra -f
-
-  sales_service:
-    build: ./sales_service
-    container_name: sales_service
-    ports:
-      - "8081:8081"
-    depends_on:
-      - postgreSQL
-      - influxdb
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgreSql:5432/electro-store
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=super
-      - INFLUX_URL=http://influxdb:8086
-      - INFLUX_TOKEN=my-super-secret-auth-token
-      - INFLUX_ORG=nais_org
-      - INFLUX_BUCKET=nais_bucket
-    networks:
-      - electric-store-net
-
-  postgreSQL:
+  postgres:
     image: postgres:15
-    container_name: postgreSql
-    restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: super
       POSTGRES_DB: electro-store
-    ports:
-      - "5432:5432"
+    ports: ["5432:5432"]
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    networks:
-      - electric-store-net
+    networks: [electric-store-net]
+
+  cassandra:
+    image: cassandra:4.1
+    ports: ["9042:9042"]
+    environment:
+      CASSANDRA_KEYSPACE: product_portfolio
+      CASSANDRA_CLUSTER_NAME: ProductCluster
+    command: cassandra -f
+    networks: [electric-store-net]
 
   influxdb:
     image: influxdb:2.7.6
-    container_name: influxdb
-    ports:
-      - "8086:8086"
-    volumes:
-      - influxdb-storage:/var/lib/influxdb
+    ports: ["8086:8086"]
     environment:
       - DOCKER_INFLUXDB_INIT_MODE=setup
       - DOCKER_INFLUXDB_INIT_USERNAME=nais
@@ -69,8 +38,39 @@ services:
       - DOCKER_INFLUXDB_INIT_ORG=nais_org
       - DOCKER_INFLUXDB_INIT_BUCKET=nais_bucket
       - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=my-super-secret-auth-token
-    networks:
-      - electric-store-net
+    volumes:
+      - influxdb-storage:/var/lib/influxdb2
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: [electric-store-net]
+
+  products_maintenance:
+    build: ./products_maintenance
+    ports: ["8080:8080"]
+    depends_on: [cassandra, nats]
+    environment:
+      - CASSANDRA_CONTACT_POINTS=cassandra
+      - NATS_URL=nats://nats:4222
+    networks: [electric-store-net]
+
+  sales_service:
+    build: ./sales_service
+    ports: ["8081:8081"]
+    depends_on: [postgres, influxdb, nats]
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/electro-store
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=super
+      - INFLUX_URL=http://influxdb:8086
+      - INFLUX_TOKEN=my-super-secret-auth-token
+      - INFLUX_ORG=nais_org
+      - INFLUX_BUCKET=nais_bucket
+      - NATS_URL=nats://nats:4222
+    networks: [electric-store-net]
+
 volumes:
   postgres_data:
   influxdb-storage:
