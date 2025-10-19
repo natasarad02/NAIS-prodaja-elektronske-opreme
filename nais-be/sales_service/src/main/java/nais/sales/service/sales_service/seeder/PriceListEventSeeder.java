@@ -6,6 +6,7 @@ import com.influxdb.client.domain.WritePrecision;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -15,6 +16,7 @@ import java.util.Random;
 
 @Component
 @RequiredArgsConstructor
+@Order(2)
 public class PriceListEventSeeder implements CommandLineRunner {
     private final InfluxDBClient client;
 

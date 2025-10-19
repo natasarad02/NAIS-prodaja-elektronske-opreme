@@ -2,12 +2,14 @@ package nais.sales.service.sales_service.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import io.nats.client.Connection;
+import io.nats.client.Options;
 
 @Configuration
 public class NatsConfig {
 
     @Bean(destroyMethod = "close")
-    public io.nats.client.Connection natsConnection() throws Exception {
+    public Connection natsConnection() throws Exception {
 
         String url = firstNonBlank(
                 System.getProperty("nats.url"),
@@ -15,15 +17,22 @@ public class NatsConfig {
                 "nats://localhost:4222"
         );
 
-        io.nats.client.Options opts = new io.nats.client.Options.Builder()
+        System.out.println("### [NATS CONFIG] Pokušavam da se povežem na NATS adresu: " + url + " ###");
+
+        Options opts = new Options.Builder()
                 .server(url)
                 .connectionName("sales-service")
-                .connectionTimeout(java.time.Duration.ofSeconds(2))
+                .connectionTimeout(java.time.Duration.ofSeconds(10))
                 .maxReconnects(-1)
-                .reconnectWait(java.time.Duration.ofSeconds(1))
+                .reconnectWait(java.time.Duration.ofSeconds(2))
+
+                .connectionListener((conn, type) -> {
+                    System.out.println("### [NATS STATUS] Novi status konekcije: " + type + " ###");
+                })
                 .build();
 
         System.out.println("[NATS] Connecting to: " + url);
+
         return io.nats.client.Nats.connect(opts);
     }
 

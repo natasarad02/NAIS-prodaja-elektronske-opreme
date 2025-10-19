@@ -4,12 +4,14 @@ import nais.sales.service.sales_service.dto.PriceListDto;
 import nais.sales.service.sales_service.service.PriceListService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
-@Controller
+@RestController
 @RequestMapping("api/price_list")
 public class PriceListController {
     private PriceListService service;
@@ -41,6 +43,6 @@ public class PriceListController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
-        return ResponseEntity.noContent().build(); // 204
+        return ResponseEntity.noContent().build();
     }
 }

@@ -8,13 +8,17 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class PriceListEventServiceImpl implements PriceListEventService {
     private final PriceListEventRepository repo;
 
-    public void create(PriceListEvent e) { e.setAction(e.getAction()==null? "CREATE": e.getAction()); repo.save(e); }
+    public PriceListEvent create(PriceListEvent e) {
+        e.setAction(e.getAction() == null ? "CREATE" : e.getAction());
+        return repo.save(e);
+    }
     public void update(PriceListEvent e) { e.setAction(e.getAction()==null? "UPDATE": e.getAction()); repo.save(e); }
     public void deleteLogically(String priceListId) {
         var e = new PriceListEvent();
@@ -29,5 +33,21 @@ public class PriceListEventServiceImpl implements PriceListEventService {
 
     public void deletePhysically(String priceListId, Instant from, Instant to) {
         repo.deleteByPriceListId(priceListId, from, to);
+    }
+
+    public List<Map<String, Object>> getActionCountsReport() {
+        return repo.getActionCounts();
+    }
+
+    public List<Map<String, Object>> getTop5ByAverageDiscountReport() {
+        return repo.getTop5ByAverageDiscount();
+    }
+    
+    public List<Map<String, Object>> getDailyTrendForTop3Report() {
+        return repo.getDailyTrendForTop3();
+    }
+
+    public List<Map<String, Object>> getDiscountVsQuantityReport(String priceListId) {
+        return repo.getDiscountVsQuantityForOne(priceListId);
     }
 }

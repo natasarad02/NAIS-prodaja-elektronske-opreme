@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import nais.sales.service.sales_service.model.PriceListEvent;
 import nais.sales.service.sales_service.service.PriceListEventService;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/price-lists")
@@ -51,5 +53,29 @@ public class PriceListEventController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant to
     ) {
         return service.timeline(id, from, to);
+    }
+
+    @GetMapping("/action-counts")
+    public ResponseEntity<List<Map<String, Object>>> getActionCountsReport() {
+        List<Map<String, Object>> result = service.getActionCountsReport();
+        return ResponseEntity.ok(result);
+    }
+    
+    @GetMapping("/top-5-discount")
+    public ResponseEntity<List<Map<String, Object>>> getTop5DiscountReport() {
+        List<Map<String, Object>> result = service.getTop5ByAverageDiscountReport();
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/top-3-daily-trend")
+    public ResponseEntity<List<Map<String, Object>>> getTop3DailyTrendReport() {
+        List<Map<String, Object>> result = service.getDailyTrendForTop3Report();
+        return ResponseEntity.ok(result);
+    }
+    
+    @GetMapping("/{priceListId}/details")
+    public ResponseEntity<List<Map<String, Object>>> getPriceListDetailsReport(@PathVariable String priceListId) {
+        List<Map<String, Object>> result = service.getDiscountVsQuantityReport(priceListId);
+        return ResponseEntity.ok(result);
     }
 }

@@ -1,13 +1,15 @@
 from uuid import uuid4
 from entity.category import Category
+from utils.get_next_id import get_next_id
 
 class CategoryRepository:
 
     @staticmethod
     def create_category(name: str, description: str, parent_id=None, status="ACTIVE"):
+        category_id = get_next_id("category")
         category = Category.create(
             parent_id=parent_id,
-            id=uuid4(),
+            id=category_id,
             name=name,
             description=description,
             status=status

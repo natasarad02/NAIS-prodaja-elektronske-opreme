@@ -14,13 +14,9 @@ import time
 from cassandra.cluster import Cluster
 from portfolio_routes import create_portfolio_router
 from fastapi.middleware.cors import CORSMiddleware
-
-import os, asyncio
-from nats.aio.client import Client as NATS
+from nats_client import connect_nats, disconnect_nats
 
 import os
-import asyncio
-from nats.aio.client import Client as NATS
 
 
 app = FastAPI(title="Products And Maintenance Microservice")
@@ -44,6 +40,8 @@ import load_cassandra_data as load_cassandra_data
 
 CASSANDRA_HOST = "cassandra"
 KEYSPACE = "product_portfolio"
+
+NATS_URL = os.getenv("NATS_URL", "nats://nats:4222")
 
 while True:
     try:
@@ -82,31 +80,10 @@ app.include_router(portfolio_router)
 def root():
     return {"message": "Products Maintenance Microservice is running"}
 
-
-
-
-NATS_URL = os.getenv("NATS_URL", "nats://nats:4222")
-nc = NATS()
-
 @app.on_event("startup")
-async def nats_startup():
-    await nc.connect(servers=[NATS_URL])
-    print(f"[PRODUCT] Connected to NATS: {NATS_URL}")
-
-    async def on_hello_product(msg):
-        text = msg.data.decode("utf-8", errors="ignore")
-        print(f"[PRODUCT] Primljeno: {text}")
-        reply = "Zdravo sales, primljeno: " + text
-        await nc.publish("hello.sales", reply.encode("utf-8"))
-        await nc.flush()
-
-    await nc.subscribe("hello.product", cb=on_hello_product)
-    await nc.flush()
-    print("[PRODUCT] Subscribed on 'hello.product'")
+async def nats_connect():
+    await connect_nats(app)
 
 @app.on_event("shutdown")
-async def nats_shutdown():
-    try:
-        await nc.drain()
-    except Exception:
-        pass
+async def nats_disconnect():
+    await disconnect_nats()

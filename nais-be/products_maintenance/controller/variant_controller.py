@@ -1,7 +1,6 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request, Query
 from dto.variant_dto import VariantDTO
 from service.variant_service import VariantService
-from fastapi import Query
 from saga.create_variant_orchestrator import VariantSagaOrchestrator
 
 router = APIRouter(prefix="/variants", tags=["Variants"])
@@ -36,9 +35,19 @@ def get_all_variants():
     return VariantService.get_all_variants()
 
 
-@router.post("/variants/create-with-price", response_model=VariantDTO)
-def create_variant_with_price(variant_data: VariantDTO, initial_price: float):
+@router.post("/create-with-price")
+async def create_variant_with_price_saga(
+    variant_data: VariantDTO, 
+    initial_price: float,
+    request: Request
+):
     try:
-        return VariantSagaOrchestrator.create_variant_with_price(variant_data, initial_price)
+        nc = request.app.state.nats_conn
+        result = await VariantSagaOrchestrator.create_variant_with_price(
+            variant_data, 
+            initial_price,
+            nc
+        )
+        return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
