@@ -1,0 +1,15 @@
+influx:
+  url: http://localhost:8086
+  org: nais_org
+  bucket: nais_bucket
+  token: ${INFLUXDB_TOKEN:my-super-secret-auth-token}
+  management:
+    influx:
+      metrics:
+        export:
+          enabled: true
+          uri: http://localhost:8086
+          api-version: v2
+          bucket: nais_bucket
+          org: nais_org
+          token: ${INFLUXDB_TOKEN:my-super-secret-auth-token}

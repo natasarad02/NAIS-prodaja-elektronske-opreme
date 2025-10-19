@@ -1,0 +1,14 @@
+% use square brackets as golang text templating delimiters
+\documentclass{article}
+\usepackage{graphicx}
+\begin{document}
+\section*{[[.Title]]}
+Period: [[.FromFormatted]] -- [[.ToFormatted]]
+
+[[range .Panels]]
+\par\bigskip
+% VARIJANTA A: pretpostavlja da reporter snima u 'images/'
+\includegraphics[width=\textwidth]{images/image[[.Id]]}
+[[end]]
+
+\end{document}
