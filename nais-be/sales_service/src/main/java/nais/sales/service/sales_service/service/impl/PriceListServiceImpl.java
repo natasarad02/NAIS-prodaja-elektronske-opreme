@@ -8,6 +8,7 @@ import nais.sales.service.sales_service.mapper.PriceListItemDtoMapper;
 import nais.sales.service.sales_service.model.*;
 import nais.sales.service.sales_service.repository.*;
 import nais.sales.service.sales_service.service.PriceListChangeRequestService;
+import nais.sales.service.sales_service.service.PriceListEventService;
 import nais.sales.service.sales_service.service.PriceListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,7 @@ public class PriceListServiceImpl implements PriceListService {
     private final LifecyclePhaseRepository _lifecyclePhaseRepository;
     private final AdministratorNotifyRepository notifyRepo;
     private final PriceListChangeRequestService priceListChangeRequestService;
+    private final PriceListEventService priceListEventService;
 
     @Autowired
     PriceListDtoMapper priceListDtoMapper;
@@ -38,7 +40,7 @@ public class PriceListServiceImpl implements PriceListService {
     @Autowired
     PriceListItemDtoMapper priceListItemDtoMapper;
 
-    public PriceListServiceImpl(PriceListRepository repository, PriceListItemRepository itemRepository, GeographicRegionRepository regionRepository, UserTypeRepository userTypeRepository, LifecyclePhaseRepository lifecyclePhaseRepository, AdministratorNotifyRepository notifyRepo, PriceListChangeRequestService priceListChangeRequestService) {
+    public PriceListServiceImpl(PriceListRepository repository, PriceListItemRepository itemRepository, GeographicRegionRepository regionRepository, UserTypeRepository userTypeRepository, LifecyclePhaseRepository lifecyclePhaseRepository, AdministratorNotifyRepository notifyRepo, PriceListChangeRequestService priceListChangeRequestService, PriceListEventService priceListEventService) {
         this._repository = repository;
         this._itemRepository = itemRepository;
         this._regionRepository = regionRepository;
@@ -46,6 +48,7 @@ public class PriceListServiceImpl implements PriceListService {
         this._lifecyclePhaseRepository = lifecyclePhaseRepository;
         this.notifyRepo = notifyRepo;
         this.priceListChangeRequestService = priceListChangeRequestService;
+        this.priceListEventService = priceListEventService;
     }
 
 

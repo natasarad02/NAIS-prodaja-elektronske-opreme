@@ -14,19 +14,21 @@ import time
 from cassandra.cluster import Cluster
 from portfolio_routes import create_portfolio_router
 from fastapi.middleware.cors import CORSMiddleware
+from nats_client import connect_nats, disconnect_nats
+
+import os
 
 
 app = FastAPI(title="Products And Maintenance Microservice")
+print("[PRODUCT] Module imported:", __name__)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  
+    allow_origins=["http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
 
 app.include_router(product_router)
 app.include_router(category_router)
@@ -34,12 +36,12 @@ app.include_router(variant_router)
 app.include_router(phase_router)
 app.include_router(history_router)
 
-
-
 import load_cassandra_data as load_cassandra_data
 
 CASSANDRA_HOST = "cassandra"
 KEYSPACE = "product_portfolio"
+
+NATS_URL = os.getenv("NATS_URL", "nats://nats:4222")
 
 while True:
     try:
@@ -69,7 +71,6 @@ for table in tables_to_drop:
 
 sync_all_tables()
 
-
 load_cassandra_data.load_data(session, sql_file="cassandra_data.sql")
 
 portfolio_router = create_portfolio_router(session)
@@ -78,3 +79,11 @@ app.include_router(portfolio_router)
 @app.get("/")
 def root():
     return {"message": "Products Maintenance Microservice is running"}
+
+@app.on_event("startup")
+async def nats_connect():
+    await connect_nats(app)
+
+@app.on_event("shutdown")
+async def nats_disconnect():
+    await disconnect_nats()

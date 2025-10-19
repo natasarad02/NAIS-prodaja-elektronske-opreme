@@ -5,3 +5,4 @@ pydantic
 requests
 python-dotenv
 numpy
+nats-py==2.7.2
