@@ -43,23 +43,23 @@ table {
   border-collapse: collapse;
   margin-top: 20px;
   font-family: Arial, sans-serif;
-  background-color: #e8f4ff; /* very light pastel blue background */
-  color: #1a3d6d; /* dark pastel blue text */
+  background-color: #e8f4ff;
+  color: #1a3d6d;
 }
 
 table thead tr {
-  background-color: #99ccff; /* soft pastel blue header */
+  background-color: #99ccff; 
   color: white;
   text-align: left;
 }
 
 table thead th {
   padding: 10px;
-  border-bottom: 2px solid #6699cc; /* medium pastel blue underline */
+  border-bottom: 2px solid #6699cc;
 }
 
 table tbody tr {
-  border-bottom: 1px solid #cce0ff; /* very light pastel line between rows */
+  border-bottom: 1px solid #cce0ff;
 }
 
 table tbody td {
@@ -67,7 +67,7 @@ table tbody td {
 }
 
 table tbody tr:nth-child(even) {
-  background-color: #d9ecff; /* light pastel blue for even rows */
+  background-color: #d9ecff;
 }
 
 
