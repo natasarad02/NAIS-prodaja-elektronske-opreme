@@ -3,8 +3,38 @@ import * as d3 from 'd3';
 import { leadStatusService } from '../services/LeadStatusService'
 import { leadLifecyclesService } from '../services/LeadLifecycleService'
 import { complexQueryService } from '../services/ComplexLeadsService'
+import { accountService } from '../services/AccountService'
+import { leadService } from '../services/LeadService'
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+
+const LeadCountFilter = ({ onSearch }) => {
+  const [value, setValue] = useState(0);
+
+  const handleSearch = () => {
+    onSearch(value); // poziva funkciju roditelja sa selektovanim brojem
+  };
+
+  return (
+    <div className="flex items-center gap-4">
+      <input
+        type="range"
+        min={0}
+        max={10}
+        value={value}
+        onChange={(e) => setValue(Number(e.target.value))}
+        className="w-64"
+      />
+      <span className="w-8 text-center">{value}</span>
+      <button
+        onClick={handleSearch}
+        className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
+      >
+        Search
+      </button>
+    </div>
+  );
+};
 
 const LeadStatusSummaryChart = ({ data }) => {
   const ref = useRef();
@@ -115,7 +145,7 @@ const LeadStatusSummaryChart = ({ data }) => {
     legendGroup.append("text")
     .attr("x", 0)
     .attr("y", -5)
-    .attr("font-size", "10px")
+    .attr("font-size", "12px")
     .attr("fill", "#000")
     .text("Average duration of a lead status(days)");
     }, [data]);
@@ -208,6 +238,7 @@ export const LeadReportPage = () => {
     const [state1, setState1] = useState('');
     const [state2, setState2] = useState('');
     const [selectedLifecycle, setSelectedLifecycle] = useState('');
+    const [selectedLifecycle2, setSelectedLifecycle2] = useState('');
 
     useEffect(() => {
         const loadData = async () => {
@@ -262,43 +293,76 @@ export const LeadReportPage = () => {
         })
     }
 
+    function getAccountsWithMoreThanNLeads(number) {
+        accountService.getProsti(number);
+    }
+
     const generatePDF = async () => {
-    const report = document.getElementById("report-container");
-    const rect = report.getBoundingClientRect();
+        const report = document.getElementById("report-container");
+        const rect = report.getBoundingClientRect();
 
-    // Širina i visina originalnog sadržaja
-    let contentWidth = rect.width; // dodajemo 150px desno
-    const contentHeight = rect.height;
+        // Centralnih 1200px + dodatnih 150px desno
+        const desiredWidth = 1200;
+        const extraRight = 150;
+        const contentWidth = Math.min(rect.width, desiredWidth + extraRight);
+        const contentHeight = rect.height;
 
-    // Offset po X osi (ako želiš da centriraš centralnih 1200px)
-    const offsetX = 0; // npr. od početka levog ruba, možeš staviti (rect.width - 1200)/2 ako centriraš
+        // Offset za centralnih 1200px (centriranje)
+        let offsetX = 0;
+        if (rect.width > desiredWidth) {
+            offsetX = (rect.width - desiredWidth) / 2;
+        }
 
-    const canvas = await html2canvas(report, {
-        scale: 2,
-        width: contentWidth,
-        height: contentHeight,
-        x: offsetX,
-        y: 0,
-        windowWidth: document.body.scrollWidth,
-        windowHeight: document.body.scrollHeight
-    });
+        // Render canvas-a
+        const canvas = await html2canvas(report, {
+            scale: 2,
+            width: contentWidth,
+            height: contentHeight,
+            x: offsetX,
+            y: 0,
+            windowWidth: document.body.scrollWidth,
+            windowHeight: document.body.scrollHeight
+        });
 
-    const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPDF({
+            orientation: "portrait",
+            unit: "px",
+            format: [595, 842] // A4 size
+        });
 
-    const pdfWidth = 595; // A4 width u px
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+        const pdfWidth = 595;
+        const pdfHeight = 842;
+        const scale = pdfWidth / canvas.width; // proporcija za A4
 
-    const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "px",
-        format: [pdfWidth + 150, pdfHeight + 150]
-    });
+        let position = 0;
 
-    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save("lead-report.pdf");
-};
+        while (position < canvas.height) {
+            const pageCanvas = document.createElement("canvas");
+            pageCanvas.width = canvas.width;
+            pageCanvas.height = Math.min(pdfHeight / scale, canvas.height - position);
 
+            const ctx = pageCanvas.getContext("2d");
+            ctx.drawImage(
+                canvas,
+                0,
+                position,
+                canvas.width,
+                pageCanvas.height,
+                0,
+                0,
+                canvas.width,
+                pageCanvas.height
+            );
 
+            const imgData = pageCanvas.toDataURL("image/png");
+            if (position > 0) pdf.addPage();
+            pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pageCanvas.height * scale);
+
+            position += pageCanvas.height;
+        }
+
+        pdf.save("lead-report.pdf");
+    };
 
     if (isLoading) {
         return (
@@ -374,6 +438,44 @@ export const LeadReportPage = () => {
                     <LeadStatusSummaryChart data={reportData.summary} />
                 </Section>
 
+                <Section title="3. Leads With Selected Lifecycle">
+                    <p className="text-gray-600 mb-6">
+                        Shows lead that are in selected lifecycle.
+                    </p>
+                    <div>
+                        <select style={{marginRight: '1rem'}}
+                            value={selectedLifecycle2}
+                            onChange={(e) => setSelectedLifecycle2(e.target.value)}>
+                            <option>Select Lead Lifecycle</option>
+                            {lifecycles.map((lifecycle) => (
+                                <option key={lifecycle.id} value={lifecycle.name}>
+                                    {lifecycle.name}
+                                </option>
+                            ))}
+                        </select>
+                        {/* <button onClick={() => getLifecycleSummery()} disabled={!selectedLifecycle}>
+                            Select Lead lifecycle
+                        </button> */}
+                    </div>
+                    {/* <DataTable
+                        data={reportData.ranking} 
+                        headers={["Ime Account-a", "Ukupno Kontakata", "Qualified Lead-ova"]}
+                    /> */}
+                </Section>
+
+                <Section title="4. Accounts with a certain number of Leads">
+                    <p className="text-gray-600 mb-6">
+                        Shows Accounts with more then n leads.
+                    </p>
+                    <LeadCountFilter onSearch={(selectedNumber) => {
+                        console.log("Tražimo Accounts sa više od:", selectedNumber);
+                        getAccountsWithMoreThanNLeads(selectedNumber); // tvoja funkcija
+                    }} />
+                    {/* <DataTable
+                        data={reportData.ranking} 
+                        headers={["Ime Account-a", "Ukupno Kontakata", "Qualified Lead-ova"]}
+                    /> */}
+                </Section>
             </div>
         </div>
     );

@@ -1,5 +1,6 @@
 package nais.sales.service.sales_service.leads.service;
 
+import nais.sales.service.sales_service.leads.dto.AccountDto;
 import nais.sales.service.sales_service.leads.model.Account;
 
 import java.util.Optional;
@@ -13,4 +14,5 @@ public interface AccountService {
     Account update(Account account);
     boolean deleteById(UUID id);
     Account checkExists(UUID id);
+    List<AccountDto> findByLeadsNumber(int leadsNumber);
 }

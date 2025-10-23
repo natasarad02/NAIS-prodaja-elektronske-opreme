@@ -1,6 +1,8 @@
 package nais.sales.service.sales_service.leads.service;
 
 import lombok.AllArgsConstructor;
+import nais.sales.service.sales_service.leads.dto.LeadDto;
+import nais.sales.service.sales_service.leads.dto.VariantDto;
 import nais.sales.service.sales_service.leads.model.Lead;
 import nais.sales.service.sales_service.leads.repository.LeadRepository;
 import static nais.sales.service.sales_service.leads.logger.AppLogger.LOG;
@@ -51,5 +53,23 @@ public class LeadServiceImpl implements LeadService {
     public Lead checkExists(UUID id) {
         return leadRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Lead with id " + id + " does not exist"));
+    }
+
+    @Override
+    public List<LeadDto> getWithStatus(UUID statusId) {
+        return leadRepository.findLeadsByStatusId(statusId)
+                .stream()
+                .map(l -> LeadDto.builder()
+                        .id(l.getId())
+                        .description(l.getDescription())
+                        .createdAt(l.getCreatedAt())
+                        .lifecycle(l.getLeadLifecycle() != null
+                                ? l.getLeadLifecycle().getName()
+                                : "")
+                        .status(l.getLeadStatus() != null
+                                ? l.getLeadStatus().getName()
+                                : "")
+                        .build())
+                .toList();
     }
 }

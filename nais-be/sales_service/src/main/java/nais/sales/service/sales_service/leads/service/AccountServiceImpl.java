@@ -1,6 +1,7 @@
 package nais.sales.service.sales_service.leads.service;
 
 import lombok.AllArgsConstructor;
+import nais.sales.service.sales_service.leads.dto.AccountDto;
 import nais.sales.service.sales_service.leads.model.Account;
 import nais.sales.service.sales_service.leads.repository.AccountRepository;
 import static nais.sales.service.sales_service.leads.logger.AppLogger.LOG;
@@ -51,5 +52,17 @@ public class AccountServiceImpl implements AccountService {
     public Account checkExists(UUID id) {
         return findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Account with id " + id + " does not exist"));
+    }
+
+    @Override
+    public List<AccountDto> findByLeadsNumber(int leadsNumber) {
+        return accountRepository.findAccountsWithMoreThanNLeads(leadsNumber).stream()
+                .map(a -> AccountDto.builder()
+                        .id(a.getId())
+                        .name(a.getName())
+                        .email(a.getEmail())
+                        .phone(a.getPhone())
+                        .build())
+                .toList();
     }
 }

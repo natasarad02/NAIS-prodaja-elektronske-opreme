@@ -1,5 +1,7 @@
 package nais.sales.service.sales_service.leads.service;
 
+import nais.sales.service.sales_service.leads.dto.LeadDto;
+import nais.sales.service.sales_service.leads.dto.VariantDto;
 import nais.sales.service.sales_service.leads.model.Lead;
 
 import java.util.Optional;
@@ -13,4 +15,5 @@ public interface LeadService {
     Lead update(Lead lead);
     boolean deleteById(UUID id);
     Lead checkExists(UUID id);
+    List<LeadDto> getWithStatus(UUID statusId);
 }

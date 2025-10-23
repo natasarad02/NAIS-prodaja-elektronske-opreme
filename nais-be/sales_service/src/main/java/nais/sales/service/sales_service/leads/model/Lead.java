@@ -1,5 +1,7 @@
 package nais.sales.service.sales_service.leads.model;
 
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.FetchType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,8 +11,11 @@ import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.UUID;
+import java.util.List;
 
 @Node("Lead")
 @Data
@@ -35,4 +40,7 @@ public class Lead {
 
     @Relationship(type = "IS_STATUS", direction = Relationship.Direction.OUTGOING)
     private LeadStatus leadStatus;
+
+    @ElementCollection
+    private List<Long> wishlist = new ArrayList<>();
 }
