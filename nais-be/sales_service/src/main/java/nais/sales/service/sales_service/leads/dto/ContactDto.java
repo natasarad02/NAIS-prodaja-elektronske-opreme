@@ -11,10 +11,12 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AccountDto {
+public class ContactDto {
     private UUID id;
-    private String name;
+    private String firstName;
+    private String lastName;
     private String email;
     private String phone;
     private boolean concrete;
+    private UUID accountId;
 }

@@ -34,7 +34,12 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account update(Account account) {
-        return accountRepository.save(account);
+        Account oldAccount = checkExists(account.getId());
+        oldAccount.setName(account.getName());
+        oldAccount.setEmail(account.getEmail());
+        oldAccount.setPhone(account.getPhone());
+        oldAccount.setConcrete(account.isConcrete());
+        return accountRepository.save(oldAccount);
     }
 
     @Override

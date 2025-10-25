@@ -294,7 +294,23 @@ export const LeadReportPage = () => {
     }
 
     function getAccountsWithMoreThanNLeads(number) {
-        accountService.getProsti(number);
+        accountService.getProsti(number)
+        .then(res => {
+            const filtered = res.map(item => ({
+                id: item.id,
+                name: item.name,
+                email: item.email,
+                phone: item.phone
+            }));
+
+            setReportData(prev => ({
+                ...prev,
+                update: filtered,
+            }));
+        })
+        .catch(err => {
+            console.log(err)
+        })
     }
 
     const generatePDF = async () => {
@@ -378,6 +394,26 @@ export const LeadReportPage = () => {
         );
     }
 
+    function getLeadsWithStatus() {
+        if(!selectedLifecycle2) return;
+        leadService.getProsti(selectedLifecycle2)
+        .then(res => {
+            const filtered = res.map(item => ({
+                id: item.id,
+                description: item.description,
+                createdAt: item.createdAt
+            }));
+
+            setReportData(prev => ({
+                ...prev,
+                density: filtered,
+            }));
+        })
+        .catch(err => {
+            console.log(err)
+        })
+    }
+
     return (
         // GLAVNI LAYOUT KONTEJNER: Odgovoran za horizontalno centriranje celog sadržaja na stranici.
         <div className="flex flex-col items-center p-4 sm:p-8 bg-gray-100 min-h-screen">
@@ -412,7 +448,7 @@ export const LeadReportPage = () => {
                     </div>
                     <DataTable
                         data={reportData.ranking} 
-                        headers={["Ime Account-a", "Ukupno Kontakata", "Qualified Lead-ova"]}
+                        headers={["Account Name", "Total Number of Contacts", "Qualified Leads"]}
                     />
                 </Section>
 
@@ -438,29 +474,29 @@ export const LeadReportPage = () => {
                     <LeadStatusSummaryChart data={reportData.summary} />
                 </Section>
 
-                <Section title="3. Leads With Selected Lifecycle">
+                <Section title="3. Leads With Selected Status">
                     <p className="text-gray-600 mb-6">
-                        Shows lead that are in selected lifecycle.
+                        Shows lead that are in selected status.
                     </p>
                     <div>
                         <select style={{marginRight: '1rem'}}
                             value={selectedLifecycle2}
                             onChange={(e) => setSelectedLifecycle2(e.target.value)}>
                             <option>Select Lead Lifecycle</option>
-                            {lifecycles.map((lifecycle) => (
-                                <option key={lifecycle.id} value={lifecycle.name}>
+                            {statuses.map((lifecycle) => (
+                                <option key={lifecycle.id} value={lifecycle.id}>
                                     {lifecycle.name}
                                 </option>
                             ))}
                         </select>
-                        {/* <button onClick={() => getLifecycleSummery()} disabled={!selectedLifecycle}>
-                            Select Lead lifecycle
-                        </button> */}
+                        <button onClick={() => getLeadsWithStatus()} disabled={!selectedLifecycle2}>
+                            Select Lead Status
+                        </button>
                     </div>
-                    {/* <DataTable
-                        data={reportData.ranking} 
-                        headers={["Ime Account-a", "Ukupno Kontakata", "Qualified Lead-ova"]}
-                    /> */}
+                    <DataTable
+                        data={reportData.density} 
+                        headers={["Lead ID", "Description", "Creation Time"]}
+                    />
                 </Section>
 
                 <Section title="4. Accounts with a certain number of Leads">
@@ -471,10 +507,10 @@ export const LeadReportPage = () => {
                         console.log("Tražimo Accounts sa više od:", selectedNumber);
                         getAccountsWithMoreThanNLeads(selectedNumber); // tvoja funkcija
                     }} />
-                    {/* <DataTable
-                        data={reportData.ranking} 
-                        headers={["Ime Account-a", "Ukupno Kontakata", "Qualified Lead-ova"]}
-                    /> */}
+                    <DataTable
+                        data={reportData.update} 
+                        headers={["Account ID", "Name", "Email", "Phone Number"]}
+                    />
                 </Section>
             </div>
         </div>

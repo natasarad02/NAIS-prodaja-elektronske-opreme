@@ -2,7 +2,6 @@ package nais.sales.service.sales_service.leads.service;
 
 import lombok.AllArgsConstructor;
 import nais.sales.service.sales_service.leads.dto.LeadDto;
-import nais.sales.service.sales_service.leads.dto.VariantDto;
 import nais.sales.service.sales_service.leads.model.Lead;
 import nais.sales.service.sales_service.leads.repository.LeadRepository;
 import static nais.sales.service.sales_service.leads.logger.AppLogger.LOG;
@@ -35,7 +34,9 @@ public class LeadServiceImpl implements LeadService {
 
     @Override
     public Lead update(Lead lead) {
-        return leadRepository.save(lead);
+        Lead oldLead = checkExists(lead.getId());
+        oldLead.setDescription(lead.getDescription());
+        return leadRepository.save(oldLead);
     }
 
     @Override

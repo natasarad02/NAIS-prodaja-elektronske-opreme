@@ -30,6 +30,9 @@ public class LeadStatusServiceImpl implements LeadStatusService {
 
     @Override
     public LeadStatus update(LeadStatus status) {
+        LeadStatus oldLeadStatus = checkExists(status.getId());
+        oldLeadStatus.setName(status.getName());
+        oldLeadStatus.setDescription(status.getDescription());
         return statusRepository.save(status);
     }
 

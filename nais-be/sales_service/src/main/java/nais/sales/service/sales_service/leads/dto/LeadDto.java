@@ -6,7 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.UUID;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -18,4 +20,7 @@ public class LeadDto {
     private LocalDateTime createdAt;
     private String lifecycle;
     private String status;
+    private UUID accountId;
+    private UUID contactId;
+    private List<Long> wishlist = new ArrayList<>();
 }

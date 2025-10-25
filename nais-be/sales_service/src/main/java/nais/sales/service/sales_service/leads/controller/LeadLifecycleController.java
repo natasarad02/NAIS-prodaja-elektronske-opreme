@@ -40,4 +40,10 @@ public class LeadLifecycleController {
                 .map(LeadLifecycleMapper::toDto)
                 .toList());
     }
+
+    @DeleteMapping("/{lifecycleId}")
+    public ResponseEntity<Void> deleteLeadLifecycle(@PathVariable UUID lifecycleId) {
+        leadLifecycleService.deleteById(lifecycleId);
+        return ResponseEntity.ok().build();
+    }
 }

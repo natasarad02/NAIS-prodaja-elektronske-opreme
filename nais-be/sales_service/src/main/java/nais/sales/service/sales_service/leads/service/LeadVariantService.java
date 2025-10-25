@@ -1,17 +1,16 @@
 package nais.sales.service.sales_service.leads.service;
 
-import lombok.RequiredArgsConstructor;
 import nais.sales.service.sales_service.leads.dto.VariantDto;
 import nais.sales.service.sales_service.leads.model.Lead;
 import nais.sales.service.sales_service.leads.repository.LeadRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import lombok.AllArgsConstructor;
 import java.util.ArrayList;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class LeadVariantService {
 
     private final VariantClientService variantClientService;
@@ -22,7 +21,7 @@ public class LeadVariantService {
         VariantDto createdVariant = variantClientService.createVariantInPython(variantDTO);
 
         if (createdVariant == null || createdVariant.getId() == null) {
-            throw new RuntimeException("Variant creation failed in Python service");
+            throw new RuntimeException("Variant creation failed in Python service (null return or missing ID). Check logs for details.");
         }
 
         try {
@@ -33,13 +32,23 @@ public class LeadVariantService {
                 lead.setWishlist(new ArrayList<>());
             }
 
+            System.out.println("Lead found, adding variant to wishlist.");
             lead.getWishlist().add(createdVariant.getId());
 
             return leadRepository.save(lead);
 
-        } catch (RuntimeException e) {
-            variantClientService.deleteVariantInPython(createdVariant.getId());
-            throw new RuntimeException("Error adding variant to wishlist", e);
+        } catch (Exception e) {
+            System.out.println("!!!ERROR!!! Local transaction failed, executing SAGA compensation step (deleting remote variant).");
+
+            try {
+                variantClientService.deleteVariantInPython(createdVariant.getId(), createdVariant.getProductId());
+                System.out.println("Compensation successful: Variant deleted from Python service (ID: " + createdVariant.getId() + ")");
+            } catch (Exception deleteException) {
+                System.err.println("CRITICAL SAGA FAILURE: Could not delete variant ID " + createdVariant.getId() + " during rollback! Manual cleanup required.");
+                deleteException.printStackTrace();
+            }
+
+            throw new RuntimeException("Error adding variant to wishlist, compensation executed.", e);
         }
     }
 }
