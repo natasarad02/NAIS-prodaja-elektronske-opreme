@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/api/history")
@@ -28,7 +29,8 @@ public class ServiceTicketHistoryController {
 
     @GetMapping
     public ResponseEntity<List<ServiceTicketHistory>> getAllHistory() {
-        List<ServiceTicketHistory> history = (List<ServiceTicketHistory>) historyRepository.findAll();
+        List<ServiceTicketHistory> history = new ArrayList<>();
+        historyRepository.findAll().forEach(history::add);
         return ResponseEntity.ok(history);
     }
 

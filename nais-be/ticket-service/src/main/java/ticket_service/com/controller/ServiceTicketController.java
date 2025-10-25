@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/api/tickets")
@@ -30,7 +31,8 @@ public class ServiceTicketController {
 
     @GetMapping
     public ResponseEntity<List<ServiceTicket>> getAllTickets() {
-        List<ServiceTicket> tickets = (List<ServiceTicket>) ticketRepository.findAll();
+        List<ServiceTicket> tickets = new ArrayList<>();
+        ticketRepository.findAll().forEach(tickets::add);
         return ResponseEntity.ok(tickets);
     }
 

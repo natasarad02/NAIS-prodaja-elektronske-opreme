@@ -18,25 +18,25 @@ public class ServiceTicketState {
     private String id;
     
     @Field(type = FieldType.Keyword)
-    private String stateName; // Naziv stanja (npr. "OTVORENO", "U_OBRADI", "ČEKA_DELOVE")
+    private String stateName; // npr. "OTVORENO", "U_OBRADI", "ČEKA_DELOVE"
     
     @Field(type = FieldType.Text)
-    private String stateDescription; // Opis stanja
+    private String stateDescription;
     
     @Field(type = FieldType.Integer)
-    private Integer orderSequence; // Redosled u životnom ciklusu (1, 2, 3...)
+    private Integer orderSequence;
     
     @Field(type = FieldType.Boolean)
-    private Boolean isInitialState; // Da li je početno stanje
+    private Boolean isInitialState;
     
     @Field(type = FieldType.Boolean)
-    private Boolean isFinalState; // Da li je završno stanje
+    private Boolean isFinalState;
     
     @Field(type = FieldType.Keyword)
     private String stateCategory; // Kategorija: "ACTIVE", "WAITING", "COMPLETED", "CANCELLED"
     
     @Field(type = FieldType.Boolean)
-    private Boolean requiresCustomerAction; // Da li zahteva akciju korisnika
+    private Boolean requiresCustomerAction;
     
     @Field(type = FieldType.Boolean)
     private Boolean isActive; // Da li je stanje aktivno u sistemu

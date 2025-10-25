@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/api/states")
@@ -25,7 +26,8 @@ public class ServiceTicketStateController {
 
     @GetMapping
     public ResponseEntity<List<ServiceTicketState>> getAllStates() {
-        List<ServiceTicketState> states = (List<ServiceTicketState>) stateRepository.findAll();
+        List<ServiceTicketState> states = new ArrayList<>();
+        stateRepository.findAll().forEach(states::add);
         return ResponseEntity.ok(states);
     }
 

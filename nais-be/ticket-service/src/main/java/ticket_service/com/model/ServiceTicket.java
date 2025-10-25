@@ -27,13 +27,13 @@ public class ServiceTicket {
     private String description;
     
     @Field(type = FieldType.Keyword)
-    private String serviceType; // Vrsta servisiranja
+    private String serviceType; 
     
     @Field(type = FieldType.Keyword)
-    private String currentStateId; // Reference to ServiceTicketState
+    private String currentStateId; 
     
     @Field(type = FieldType.Keyword)
-    private String currentStateName; // Denormalized for faster queries
+    private String currentStateName;
     
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second_millis)
     private LocalDateTime createdAt;
@@ -51,22 +51,22 @@ public class ServiceTicket {
     private String customerEmail;
     
     @Field(type = FieldType.Keyword)
-    private String assignedTo; // Servisni tehničar
+    private String assignedTo;
     
     @Field(type = FieldType.Integer)
-    private Integer priority; // 1-5 (1=najniži, 5=najviši)
+    private Integer priority; // 1-5 
     
     @Field(type = FieldType.Text)
-    private String customerFeedback; // Povratne informacije korisnika
+    private String customerFeedback;
     
     @Field(type = FieldType.Integer)
-    private Integer customerRating; // 1-5 ocena zadovoljstva
+    private Integer customerRating;
     
     @Field(type = FieldType.Long)
-    private Long totalDurationMinutes; // Ukupno trajanje u minutima
+    private Long totalDuration; // Ukupno trajanje u minutima
     
     @Field(type = FieldType.Text)
-    private String internalNotes; // Interne beleške
+    private String internalNotes;
     
     @Field(type = FieldType.Boolean)
     private Boolean isResolved;
@@ -75,7 +75,7 @@ public class ServiceTicket {
     private LocalDateTime resolvedAt;
     
     @Field(type = FieldType.Keyword)
-    private String deviceType; // Tip uređaja/opreme
+    private String deviceType;
     
     @Field(type = FieldType.Keyword)
     private String deviceModel;
