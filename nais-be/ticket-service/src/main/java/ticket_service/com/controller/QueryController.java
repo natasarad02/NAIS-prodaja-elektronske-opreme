@@ -20,7 +20,7 @@ public class QueryController {
      * COMPLEX QUERY 1:
      * 
      * Example:
-     * GET /api/queries/search?searchText=ekran&minPriority=3&fromDate=2024-01-01T00:00:00&toDate=2025-12-31T23:59:59
+     * GET /api/queries/search?searchText=ekran&minPriority=3
      */
     @GetMapping("/search")
     public ResponseEntity<Map<String, Object>> searchTicketsWithFilters(
@@ -56,7 +56,7 @@ public class QueryController {
      * COMPLEX QUERY 3:
      * 
      * Example:
-     * GET /api/queries/satisfaction?minRating=4&onlyResolved=true&fromDate=2024-01-01T00:00:00&toDate=2025-12-31T23:59:59
+     * GET /api/queries/satisfaction?minRating=4
      */
     @GetMapping("/satisfaction")
     public ResponseEntity<Map<String, Object>> analyzeCustomerSatisfaction(
