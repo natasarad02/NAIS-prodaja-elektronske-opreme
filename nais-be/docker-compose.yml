@@ -10,6 +10,9 @@ services:
       - cassandra
     environment:
       - CASSANDRA_CONTACT_POINTS=cassandra
+      - SALES_BASE_URL=http://sales_service:8081
+    networks:
+      - electric-store-net
 
   cassandra:
     image: cassandra:4.1
@@ -19,3 +22,93 @@ services:
     environment:
       CASSANDRA_KEYSPACE: product_portfolio
       CASSANDRA_CLUSTER_NAME: ProductCluster
+    command: cassandra -f
+    networks:
+      - electric-store-net
+
+  sales_service:
+    build: ./sales_service
+    container_name: sales_service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgreSQL
+      - influxdb
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgreSql:5432/electro-store
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=super
+      - INFLUX_URL=http://influxdb:8086
+      - INFLUX_TOKEN=my-super-secret-auth-token
+      - INFLUX_ORG=nais_org
+      - INFLUX_BUCKET=nais_bucket
+    networks:
+      - electric-store-net
+
+  postgreSQL:
+    image: postgres:15
+    container_name: postgreSql
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: super
+      POSTGRES_DB: electro-store
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - electric-store-net
+
+  influxdb:
+    image: influxdb:2.7.6
+    container_name: influxdb
+    ports:
+      - "8086:8086"
+    volumes:
+      - influxdb-storage:/var/lib/influxdb
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=nais
+      - DOCKER_INFLUXDB_INIT_PASSWORD=password
+      - DOCKER_INFLUXDB_INIT_ORG=nais_org
+      - DOCKER_INFLUXDB_INIT_BUCKET=nais_bucket
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=my-super-secret-auth-token
+    networks:
+      - electric-store-net
+
+  ticket_service:
+    build: ./ticket-service
+    container_name: ticket-service
+    ports:
+      - "8089:8089"
+    depends_on:
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    networks:
+      - electric-store-net
+      
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.3
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elastic_data:/usr/share/elasticsearch/data
+    networks:
+      - electric-store-net
+
+volumes:
+  postgres_data:
+  influxdb-storage:
+  elastic_data:
+
+networks:
+  electric-store-net:
+    driver: bridge

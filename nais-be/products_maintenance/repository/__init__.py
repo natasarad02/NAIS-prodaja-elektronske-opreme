@@ -1,0 +1,5 @@
+from .product_repository import ProductRepository
+from .category_repository import CategoryRepository
+from .variant_repository import VariantRepository
+from .product_lifecycle_phase_repository import ProductLifecyclePhaseRepository
+from .product_history_repository import ProductHistoryRepository
